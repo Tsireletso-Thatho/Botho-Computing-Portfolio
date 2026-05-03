@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <meta name="description" content="MarketPulse Analytics - Professional financial dashboard by Tsireletso Thatho">
+  <meta name="author" content="Tsireletso Thatho">
+  <title>MarketPulse Analytics | Tsireletso Thatho</title>
+  
+  <!-- External Stylesheet (Separation of Concerns: CSS) -->
+  <link rel="stylesheet" href="styles.css">
+  
+  <!-- Tailwind CSS Play CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <!-- Skip Navigation (Accessibility) -->
+  <a href="#mainContent" class="skip-link">Skip to main content</a>
+
+  <!-- Sidebar Overlay (Mobile) -->
+  <div id="sidebarOverlay" class="sidebar-overlay" aria-hidden="true"></div>
+
+  <!-- ==================== GLASS SIDEBAR ==================== -->
+  <aside id="sidebar" class="glass-sidebar" role="navigation" aria-label="Main navigation">
+    
+    <!-- Logo Section -->
+    <div class="sidebar-header">
+      <div class="logo-container">
+        <i data-lucide="layout-dashboard" class="icon-lg text-emerald" aria-hidden="true"></i>
+        <h1 class="logo-text">Market<span class="text-emerald">Pulse</span></h1>
+      </div>
+      <button id="closeSidebarBtn" class="icon-btn close-sidebar-btn" aria-label="Close navigation menu">
+        <i data-lucide="x" aria-hidden="true"></i>
+      </button>
+    </div>
+
+    <!-- Navigation Links -->
+    <nav class="sidebar-nav" role="navigation">
+      <button onclick="switchSection('dashboard')" id="nav-dashboard" class="nav-btn active" aria-current="page" data-section="dashboard">
+        <i data-lucide="layout-dashboard" aria-hidden="true"></i>
+        <span>Dashboard</span>
+      </button>
+      <button onclick="switchSection('markets')" id="nav-markets" class="nav-btn" data-section="markets">
+        <i data-lucide="trending-up" aria-hidden="true"></i>
+        <span>Markets</span>
+      </button>
+      <button onclick="switchSection('portfolio')" id="nav-portfolio" class="nav-btn" data-section="portfolio">
+        <i data-lucide="pie-chart" aria-hidden="true"></i>
+        <span>Portfolio</span>
+      </button>
+      <button onclick="switchSection('alerts')" id="nav-alerts" class="nav-btn" data-section="alerts">
+        <i data-lucide="bell" aria-hidden="true"></i>
+        <span>Alerts</span>
+      </button>
+      <button onclick="switchSection('settings')" id="nav-settings" class="nav-btn" data-section="settings">
+        <i data-lucide="settings" aria-hidden="true"></i>
+        <span>Settings</span>
+      </button>
+    </nav>
+
+    <!-- Spacer -->
+    <div class="sidebar-spacer"></div>
+
+    <!-- Theme Toggle -->
+    <div class="theme-toggle-container">
+      <button id="themeToggleBtn" class="theme-toggle-btn" aria-label="Toggle dark/light mode">
+        <i data-lucide="sun" id="themeIconLight" class="hidden" aria-hidden="true"></i>
+        <i data-lucide="moon" id="themeIconDark" aria-hidden="true"></i>
+      </button>
+      <span class="theme-label">Toggle Theme</span>
+    </div>
+
+    <!-- User Profile -->
+    <div class="sidebar-profile">
+      <div class="profile-info">
+        <div class="avatar">
+          <i data-lucide="user" aria-hidden="true"></i>
+        </div>
+        <div class="profile-details">
+          <span class="profile-name">Tsireletso Thatho</span>
+          <span class="profile-role">Investor</span>
+        </div>
+      </div>
+      <button id="contactBtn" class="contact-btn" aria-label="Contact via email">
+        <i data-lucide="mail" aria-hidden="true"></i>
+        <span>Contact</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ==================== MAIN CONTENT ==================== -->
+  <main id="mainContent" class="main-content" role="main">
+    
+    <!-- Mobile Header -->
+    <header class="mobile-header" aria-label="Mobile navigation header">
+      <button id="menuToggleBtn" class="icon-btn" aria-label="Open navigation menu">
+        <i data-lucide="menu" aria-hidden="true"></i>
+      </button>
+      <h1 class="mobile-logo">Market<span class="text-emerald">Pulse</span></h1>
+      <div class="mobile-header-actions">
+        <button id="mobileThemeToggle" class="icon-btn" aria-label="Toggle theme">
+          <i data-lucide="sun" class="mobile-sun-icon hidden" aria-hidden="true"></i>
+          <i data-lucide="moon" class="mobile-moon-icon" aria-hidden="true"></i>
+        </button>
+        <button class="icon-btn notification-btn" aria-label="Notifications">
+          <i data-lucide="bell" aria-hidden="true"></i>
+          <span class="notification-dot"></span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Desktop Header -->
+    <header class="desktop-header" aria-label="Desktop header">
+      <div class="search-container">
+        <i data-lucide="search" class="search-icon" aria-hidden="true"></i>
+        <input type="text" id="searchInput" placeholder="Search assets, stocks, or symbols..." class="search-input" aria-label="Search assets"/>
+      </div>
+      <div class="desktop-header-actions">
+        <button class="icon-btn notification-btn" aria-label="Notifications">
+          <i data-lucide="bell" aria-hidden="true"></i>
+          <span class="notification-dot"></span>
+        </button>
+        <span class="portfolio-badge">Investment Portfolio</span>
+      </div>
+    </header>
+
+    <!-- ==================== DASHBOARD SECTION ==================== -->
+    <section id="dashboardSection" class="section-panel active" aria-labelledby="dashboardHeading">
+      <div class="section-content">
+        
+        <!-- Market Ticker Bar -->
+        <div class="ticker-container card-glass">
+          <div class="ticker-track" id="tickerBar" aria-label="Live market ticker">
+            <!-- JS populated -->
+          </div>
+        </div>
+        
+        <!-- Stats Cards -->
+        <div class="stats-grid" id="statsGrid">
+          <article class="stat-card card-glass">
+            <div class="stat-content">
+              <p class="stat-label">Portfolio Value</p>
+              <p id="portfolioValue" class="stat-value">$148,392</p>
+            </div>
+            <div class="stat-icon-container">
+              <i data-lucide="trending-up" class="icon-md text-emerald" aria-hidden="true"></i>
+            </div>
+          </article>
+
+          <article class="stat-card card-glass">
+            <div class="stat-content">
+              <p class="stat-label">Daily Change</p>
+              <p id="dailyChange" class="stat-value positive">+2.54%</p>
+            </div>
+            <div class="stat-icon-container">
+              <i data-lucide="bar-chart-3" class="icon-md text-emerald" aria-hidden="true"></i>
+            </div>
+          </article>
+
+          <article class="stat-card card-glass">
+            <div class="stat-content">
+              <p class="stat-label">Tracked Assets</p>
+              <p id="totalAssets" class="stat-value">8</p>
+            </div>
+            <div class="stat-icon-container">
+              <i data-lucide="briefcase" class="icon-md text-emerald" aria-hidden="true"></i>
+            </div>
+          </article>
+
+          <article class="stat-card card-glass">
+            <div class="stat-content">
+              <p class="stat-label">Portfolio Yield</p>
+              <p id="portfolioYield" class="stat-value">8.7%</p>
+            </div>
+            <div class="stat-icon-container">
+              <i data-lucide="percent" class="icon-md text-emerald" aria-hidden="true"></i>
+            </div>
+          </article>
+        </div>
+
+        <!-- Chart Controls -->
+        <div class="chart-controls card-glass">
+          <div class="controls-row">
+            <div class="time-range-buttons" role="group" aria-label="Time range selection">
+              <button onclick="setTimeRange('1D')" class="time-btn active" data-range="1D">
+                <i data-lucide="clock" aria-hidden="true"></i> 1D
+              </button>
+              <button onclick="setTimeRange('1W')" class="time-btn" data-range="1W">
+                <i data-lucide="calendar-days" aria-hidden="true"></i> 1W
+              </button>
+              <button onclick="setTimeRange('1M')" class="time-btn" data-range="1M">
+                <i data-lucide="calendar" aria-hidden="true"></i> 1M
+              </button>
+              <button onclick="setTimeRange('1Y')" class="time-btn" data-range="1Y">
+                <i data-lucide="calendar-range" aria-hidden="true"></i> 1Y
+              </button>
+            </div>
+            <div class="chart-type-buttons" role="group" aria-label="Chart type selection">
+              <button onclick="setChartType('line')" class="chart-type-btn active" data-type="line">
+                <i data-lucide="activity" aria-hidden="true"></i> Line
+              </button>
+              <button onclick="setChartType('bar')" class="chart-type-btn" data-type="bar">
+                <i data-lucide="bar-chart-3" aria-hidden="true"></i> Bar
+              </button>
+              <button onclick="setChartType('area')" class="chart-type-btn" data-type="area">
+                <i data-lucide="area-chart" aria-hidden="true"></i> Area
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="charts-grid">
+          <div class="chart-card card-glass">
+            <div class="chart-header">
+              <h3 class="chart-title">
+                <i data-lucide="activity" class="icon-sm text-emerald" aria-hidden="true"></i>
+                <span id="mainChartTitle">Live Market Data</span>
+              </h3>
+              <span class="live-badge" aria-label="Live updating">
+                <span class="live-dot" aria-hidden="true"></span>
+                Live
+              </span>
+            </div>
+            <div class="chart-body">
+              <canvas id="mainChart" aria-label="Live market data chart" role="img"></canvas>
+            </div>
+          </div>
+
+          <div class="chart-card card-glass">
+            <div class="chart-header">
+              <h3 class="chart-title">
+                <i data-lucide="pie-chart" class="icon-sm text-emerald" aria-hidden="true"></i>
+                Asset Allocation
+              </h3>
+              <button onclick="setAllocationChartType()" class="icon-btn chart-toggle-btn" aria-label="Toggle allocation chart type">
+                <i data-lucide="refresh-cw" aria-hidden="true"></i>
+              </button>
+            </div>
+            <div class="chart-body">
+              <canvas id="allocationChart" aria-label="Asset allocation chart" role="img"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Watchlist Table -->
+        <div class="watchlist-container card-glass">
+          <div class="watchlist-header">
+            <h3 class="watchlist-title">
+              <i data-lucide="star" class="icon-sm text-emerald" aria-hidden="true"></i>
+              Custom Watchlist
+            </h3>
+            <button onclick="openAddAssetModal()" class="add-asset-btn" aria-label="Add asset to watchlist">
+              <i data-lucide="plus" aria-hidden="true"></i>
+              Add Asset
+            </button>
+          </div>
+          <div class="table-wrapper">
+            <table class="watchlist-table" aria-label="Watchlist table">
+              <thead>
+                <tr>
+                  <th scope="col"><i data-lucide="hash" class="icon-xs" aria-hidden="true"></i> Symbol</th>
+                  <th scope="col"><i data-lucide="building-2" class="icon-xs" aria-hidden="true"></i> Name</th>
+                  <th scope="col"><i data-lucide="dollar-sign" class="icon-xs" aria-hidden="true"></i> Price</th>
+                  <th scope="col"><i data-lucide="trending-up" class="icon-xs" aria-hidden="true"></i> Change</th>
+                  <th scope="col"><i data-lucide="bar-chart-2" class="icon-xs" aria-hidden="true"></i> Volume</th>
+                  <th scope="col"><i data-lucide="trash-2" class="icon-xs" aria-hidden="true"></i> Action</th>
+                </tr>
+              </thead>
+              <tbody id="watchlistBody">
+                <!-- JS populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== MARKETS SECTION ==================== -->
+    <section id="marketsSection" class="section-panel" aria-labelledby="marketsHeading">
+      <div class="section-content">
+        <h2 id="marketsHeading" class="section-heading">
+          <i data-lucide="trending-up" class="icon-xl text-emerald" aria-hidden="true"></i>
+          Live Markets
+        </h2>
+        <div class="markets-grid" id="marketsGrid">
+          <!-- JS populated -->
+        </div>
+        <div class="news-container card-glass">
+          <h3 class="news-title">
+            <i data-lucide="newspaper" class="icon-md text-emerald" aria-hidden="true"></i>
+            Market News
+          </h3>
+          <div class="news-feed" id="newsFeed">
+            <article class="news-item">
+              <h4><i data-lucide="landmark" class="icon-xs text-emerald" aria-hidden="true"></i> Fed Signals Potential Rate Cut in September</h4>
+              <p class="news-meta">2 hours ago · Reuters</p>
+            </article>
+            <article class="news-item">
+              <h4><i data-lucide="coins" class="icon-xs text-emerald" aria-hidden="true"></i> Gold Hits All-Time High Amid Economic Uncertainty</h4>
+              <p class="news-meta">4 hours ago · Bloomberg</p>
+            </article>
+            <article class="news-item">
+              <h4><i data-lucide="cpu" class="icon-xs text-emerald" aria-hidden="true"></i> Tech Stocks Rally as AI Optimism Continues</h4>
+              <p class="news-meta">6 hours ago · CNBC</p>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== PORTFOLIO SECTION ==================== -->
+    <section id="portfolioSection" class="section-panel" aria-labelledby="portfolioHeading">
+      <div class="section-content">
+        <h2 id="portfolioHeading" class="section-heading">
+          <i data-lucide="pie-chart" class="icon-xl text-emerald" aria-hidden="true"></i>
+          Portfolio Holdings
+        </h2>
+        <div class="portfolio-grid">
+          <div class="holdings-card card-glass">
+            <h3><i data-lucide="wallet" class="icon-md text-emerald" aria-hidden="true"></i> Your Holdings</h3>
+            <div class="holdings-list" id="holdingsList">
+              <!-- JS populated -->
+            </div>
+          </div>
+          <div class="performance-card card-glass">
+            <h3><i data-lucide="trending-up" class="icon-md text-emerald" aria-hidden="true"></i> Performance Overview</h3>
+            <div class="chart-body">
+              <canvas id="portfolioPerformanceChart" aria-label="Portfolio performance chart" role="img"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== ALERTS SECTION ==================== -->
+    <section id="alertsSection" class="section-panel" aria-labelledby="alertsHeading">
+      <div class="section-content">
+        <h2 id="alertsHeading" class="section-heading">
+          <i data-lucide="bell" class="icon-xl text-emerald" aria-hidden="true"></i>
+          Price Alerts
+        </h2>
+        <div class="alerts-container card-glass" id="alertsList">
+          <div class="alert-item active">
+            <div class="alert-info">
+              <h4><i data-lucide="bell-ring" class="icon-sm text-emerald" aria-hidden="true"></i> Gold Price Alert</h4>
+              <p>Triggered when XAU/USD reaches $2,400</p>
+            </div>
+            <span class="alert-status active"><i data-lucide="check-circle" class="icon-xs" aria-hidden="true"></i> Active</span>
+          </div>
+          <div class="alert-item paused">
+            <div class="alert-info">
+              <h4><i data-lucide="bell-off" class="icon-sm" aria-hidden="true"></i> NASDAQ Drop Alert</h4>
+              <p>Notify if NASDAQ drops below 17,500</p>
+            </div>
+            <span class="alert-status paused"><i data-lucide="pause-circle" class="icon-xs" aria-hidden="true"></i> Paused</span>
+          </div>
+          <div class="alert-item paused">
+            <div class="alert-info">
+              <h4><i data-lucide="bell" class="icon-sm" aria-hidden="true"></i> Bitcoin Volatility Alert</h4>
+              <p>Alert on >5% daily movement</p>
+            </div>
+            <span class="alert-status paused"><i data-lucide="pause-circle" class="icon-xs" aria-hidden="true"></i> Paused</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SETTINGS SECTION ==================== -->
+    <section id="settingsSection" class="section-panel" aria-labelledby="settingsHeading">
+      <div class="section-content">
+        <h2 id="settingsHeading" class="section-heading">
+          <i data-lucide="settings" class="icon-xl text-emerald" aria-hidden="true"></i>
+          Dashboard Settings
+        </h2>
+        <div class="settings-grid">
+          <div class="settings-card card-glass">
+            <h3><i data-lucide="check-square" class="icon-md text-emerald" aria-hidden="true"></i> Select Assets to Track</h3>
+            <p class="settings-description">Choose which assets appear in your dashboard and charts.</p>
+            <div class="asset-selection-grid" id="assetSelectionGrid">
+              <!-- JS populated -->
+            </div>
+          </div>
+          <div class="settings-card card-glass">
+            <h3><i data-lucide="sliders" class="icon-md text-emerald" aria-hidden="true"></i> Chart Preferences</h3>
+            <div class="preference-group">
+              <label class="preference-label">
+                <span><i data-lucide="bar-chart-3" class="icon-xs" aria-hidden="true"></i> Default Chart Type</span>
+                <select id="defaultChartType" class="preference-select">
+                  <option value="line">Line Chart</option>
+                  <option value="bar">Bar Chart</option>
+                  <option value="area">Area Chart</option>
+                </select>
+              </label>
+              <label class="preference-label">
+                <span><i data-lucide="clock" class="icon-xs" aria-hidden="true"></i> Default Time Range</span>
+                <select id="defaultTimeRange" class="preference-select">
+                  <option value="1D">1 Day</option>
+                  <option value="1W">1 Week</option>
+                  <option value="1M">1 Month</option>
+                  <option value="1Y">1 Year</option>
+                </select>
+              </label>
+              <label class="preference-label">
+                <span><i data-lucide="refresh-cw" class="icon-xs" aria-hidden="true"></i> Update Interval</span>
+                <select id="updateInterval" class="preference-select">
+                  <option value="1000">1 second</option>
+                  <option value="3000" selected>3 seconds</option>
+                  <option value="5000">5 seconds</option>
+                  <option value="10000">10 seconds</option>
+                </select>
+              </label>
+            </div>
+          </div>
+          <div class="settings-card card-glass">
+            <h3><i data-lucide="palette" class="icon-md text-emerald" aria-hidden="true"></i> Appearance</h3>
+            <div class="preference-group">
+              <label class="preference-label toggle-label">
+                <span><i data-lucide="moon" class="icon-xs" aria-hidden="true"></i> Dark Mode</span>
+                <input type="checkbox" id="darkModeToggle" class="toggle-input" checked>
+                <span class="toggle-switch"></span>
+              </label>
+              <label class="preference-label toggle-label">
+                <span><i data-lucide="play" class="icon-xs" aria-hidden="true"></i> Animations</span>
+                <input type="checkbox" id="animationsToggle" class="toggle-input" checked>
+                <span class="toggle-switch"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="main-footer" role="contentinfo">
+      <i data-lucide="code-2" class="icon-sm text-emerald" aria-hidden="true"></i>
+      <span>Developed by <strong class="footer-name">Tsireletso Thatho</strong> · MarketPulse Analytics · Investment Portfolio 2026</span>
+    </footer>
+  </main>
+
+  <!-- ==================== ADD ASSET MODAL ==================== -->
+  <div id="addAssetModal" class="modal" role="dialog" aria-labelledby="addAssetHeading" aria-hidden="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="addAssetHeading">
+          <i data-lucide="plus-circle" class="icon-md text-emerald" aria-hidden="true"></i>
+          Add Asset to Watchlist
+        </h3>
+        <button id="closeAddAssetModal" class="icon-btn modal-close-btn" aria-label="Close modal">
+          <i data-lucide="x" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="available-assets" id="availableAssets">
+          <!-- JS populated -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== CONTACT MODAL ==================== -->
+  <div id="contactModal" class="modal" role="dialog" aria-labelledby="contactHeading" aria-hidden="true">
+    <div class="modal-content contact-modal-content">
+      <div class="modal-header">
+        <h3 id="contactHeading">
+          <i data-lucide="mail" class="icon-md text-emerald" aria-hidden="true"></i>
+          Get in Touch
+        </h3>
+        <button id="closeContactModal" class="icon-btn modal-close-btn" aria-label="Close modal">
+          <i data-lucide="x" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p><i data-lucide="briefcase" class="icon-sm text-emerald" aria-hidden="true"></i> I'm seeking internship opportunities in frontend development and software engineering.</p>
+        <p class="modal-subtext">Reach out via email for collaboration or opportunities.</p>
+        <a href="mailto:thathotsireletso@gmail.com" class="email-link">
+          <i data-lucide="send" aria-hidden="true"></i>
+          thathotsireletso@gmail.com
+        </a>
+        <p class="modal-footer-text">Tsireletso Thatho · Investment Portfolio 2026</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- External JavaScript (Separation of Concerns) -->
+  <script src="script.js"></script>
+</body>
+</html>
