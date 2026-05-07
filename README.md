@@ -22,7 +22,7 @@ This project demonstrates modern frontend development techniques including:
 
 ### 🌐 Live Demo
 
-🔗 [Launch MarketPulse Analytics](https://tsireletso-thatho.github.io/Botho-Computing-Portfolio/marketpulse-analytics/)
+🔗 [Launch MarketPulse Analytics](https://tsireletso-thatho.github.io/marketpulse-analytics/marketpulse-analytics/)
 
 ---
 
