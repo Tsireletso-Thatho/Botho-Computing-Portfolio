@@ -1,0 +1,115 @@
+<?php
+//Database connection
+$conn = new mysqli('localhost', 'root', '', 'MalutiDB');
+
+if ($conn->connect_error) {
+    die('Connection Failed: ' . $conn->connect_error);
+}
+
+//Query to generate financial report using records in the fees table in the database
+$query = "
+    SELECT 
+        student_id,
+        COUNT(*) AS total_payments,
+        SUM(CASE WHEN status = 'Paid' THEN 1 ELSE 0 END) AS paid_count,
+        SUM(CASE WHEN status = 'Pending' THEN 1 ELSE 0 END) AS pending_count,
+        MAX(payment_date) AS last_payment_date
+    FROM fees
+    GROUP BY student_id
+";
+
+$result = $conn->query($query);
+
+echo '
+<style>
+    h2 {
+        color: #009870;
+        margin-left: 15%;
+        margin-bottom: 30px;
+    }
+    a .click {
+        background: #009870;
+        color: white;
+        padding: 12px;
+        width: 150px;
+        border-radius: 15px;
+        border: 0;
+        transition: .3s ease;
+        cursor: pointer;
+    }
+    .click:hover {
+        background: skyblue;
+    }
+    a .btn-click {
+        background: skyblue;
+        color: white;
+        width: 60px;
+        height: 20px;
+        padding: 3px;
+        border-radius: 15px;
+        border: 0;
+        transition: .3s ease;
+        cursor: pointer;
+    }
+    .btn-click:hover {
+        background: #009870;
+    }
+    .content {
+        border-radius: 10px 10px 0 0;
+        overflow: hidden;
+        border-collapse: collapse;
+        margin: 25px auto;
+        font-size: 0.9em;
+        min-width: 400px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, .15);
+        width: 100%;
+    }
+    .content thead tr {
+        background: #009870;
+        color: white;
+        text-align: left;
+        font-weight: bold;
+    }
+    .content th,
+    .content td {
+        padding: 12px 15px;
+    }
+    .content tbody tr {
+        border-bottom: 1px solid #dddddd;
+    }
+    .content tbody tr:nth-of-type(even) {
+        background-color: #f3f3f3;
+    }
+    .content tbody tr:last-of-type {
+        border-bottom: 2px solid #009829;
+    }
+</style>';
+
+echo "<h2>Finance Report</h2>";
+
+echo "<table class='content'>
+        <thead>
+            <tr>
+                <th>Student ID</th>
+                <th>Total Payments</th>
+                <th>Paid</th>
+                <th>Pending</th>
+                <th>Last Payment Date</th>
+            </tr>
+        </thead>
+        <tbody>";
+
+while ($row = $result->fetch_assoc()) {
+    echo "<tr>
+            <td>{$row['student_id']}</td>
+            <td>{$row['total_payments']}</td>
+            <td>{$row['paid_count']}</td>
+            <td>{$row['pending_count']}</td>
+            <td>{$row['last_payment_date']}</td>
+          </tr>";
+}
+
+echo "</tbody></table>";
+
+$conn->close();
+?>

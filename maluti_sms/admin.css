@@ -1,0 +1,52 @@
+*{
+	margin: 0;
+	padding: 0;
+	font-family: sans-serif;
+}
+
+.header{
+	background: skyblue;
+	line-height: 70px;
+	padding-left: 30px;
+}
+
+a, a:hover{
+	text-decoration: none!important;
+	font-weight: 500;
+	font-size: 20px;
+}
+
+.logout{
+	float: right;
+	padding-right: 30px;
+}
+
+ul{
+	background: #424a5b;
+	width: 16%;
+	height: 100%;
+	position: fixed;
+	padding-top: 5%;
+	text-align: left;
+}
+
+ul li{
+	list-style: none;
+	padding-bottom: 10px!important;
+	font-size: 10px;
+}
+
+ul li a{
+	color: white;
+	margin-left: 3px;
+}
+
+ul li a:hover{
+	color: skyblue;
+	text-decoration: none;
+}
+
+.content{
+	margin-left: 20%;
+	margin-top: 5%;
+}
